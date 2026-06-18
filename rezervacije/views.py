@@ -52,12 +52,18 @@ class ReservationViewSet(viewsets.ModelViewSet):
         ).select_related('guest', 'company')
 
     def perform_create(self, serializer):
+        reservation = self.data
+        ActivityLog.objects.create(
+        user=self.request.user,
+        action='create',
+        description=f'Rezervacija #{reservation.id} kreirana'
+        )   
         serializer.save(guest=self.request.user)
 
     @action(detail=True, methods=['patch'])
     def update_status(self, request, pk=None):
+        reservation = request.data
         ActivityLog.objects.create(user=request.user, action='profile', description='Rezervacija izmenjena')
-
         reservation = self.get_object()
         
         if request.user.role == 'company':
