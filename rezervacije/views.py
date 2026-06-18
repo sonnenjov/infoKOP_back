@@ -41,6 +41,8 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return Reservation.objects.all().select_related('guest', 'company')
         if user.role == 'company':
             return Reservation.objects.filter(
                 company=user.company_profile
