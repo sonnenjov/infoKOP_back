@@ -1,0 +1,21 @@
+title,company_email,company_name,description,season,price,duration_minutes,max_capacity,location,is_active
+Zimske Skijaške Lekcije,ski@kopaonik.com,Skijaška Škola Kopaonik,Profesionalne skijaške lekcije za sve nivoe,zima,25.00,120,10,Glavna Skijaška Staza,True
+Letnja Planinarska Avantura,planinarenje@planina.com,Planinske Avanture,Vodene planinarske ture kroz prelepe planinske staze,leto,15.00,180,15,Planinska Staza,True
+Joga Retreat,joga@wellness.com,Wellness Centar,Opuštajuće joga sesije sa planinskim pogledom,leto,20.00,90,8,Wellness Paviljon,True
+Avantura sa Motornim Sankama,sneg@ekstremno.com,Ekstremni Sportovi,Uzbudljive vožnje motornim sankama kroz zimski pejzaž,zima,35.00,60,4,Park Motornih Sanki,True
+Planinski Biciklizam,bicikl@iznajmljivanje.com,Iznajmljivanje Bicikala,Profesionalne ture planinskim biciklima sa vodičem,leto,18.00,120,6,Biciklistička Staza,True
+Klizanje na Ledu,led@klizalište.com,Ledeno Klizalište,Iskustvo klizanja na otvorenom za sve uzraste,zima,10.00,60,20,Ledeno Klizalište,True
+Radionica Fotografije,foto@studio.com,Foto Studio,Naučite pejzažnu fotografiju sa planinskim prizorima,ceo_godina,30.00,180,12,Vidikovac,True
+Iskustvo Paraglidinga,para@klub.com,Paragliding Klub,Tandem paragliding letovi iznad planina,leto,45.00,30,2,Poletna Tačka,True
+Nordijsko Skijanje,nordijski@centar.com,Nordijski Ski Centar,Vodene ture nordijskog skijanja kroz šume,zima,22.00,120,8,Nordijske Staze,True
+Kurs Penjanja,penjanje@klub.com,Penjački Klub,Časovi penjanja za sve nivoe veštine,leto,20.00,150,6,Unutrašnji Zid za Penjanje,True
+Veče Degustacije Vina,vino@lokalno.com,Lokalna Vinerija,Tradicionalna degustacija vina sa lokalnim somelijerom,ceo_godina,35.00,90,12,Vinski Podrum,True
+Iznajmljivanje Skijaške Opreme,rentiranje@ski.com,Radnja za Iznajmljivanje Skija,Kvalitetna oprema za skijanje po povoljnim cenama,zima,15.00,30,1,Radnja za Iznajmljivanje,True
+Avantura Krpljenja,krplje@avanture.com,Avanturističke Ture,Vodene ture krpljenjem kroz zimski planinski predeo,zima,18.00,120,10,Šumska Staza,True
+Doručak na Vrhu Planine,doručak@kafe.com,Planinski Kafe,Pun doručak sa spektakularnim planinskim pogledom,leto,12.00,60,20,Vidikovac Kafe,True
+Noć Posmatranja Zvezda,zvezde@noc.com,Noćne Ture,Profesionalno posmatranje noćnog neba i astrofotografija,ceo_godina,25.00,120,8,Tačka za Posmatranje,True
+Unutrašnje Penjanje,bolder@teretana.com,Bolder Teretana,Unutrašnje bolder penjanje za sve nivoe,ceo_godina,15.00,90,15,Penjačka Teretana,True
+Zimska Foto Tura,foto@zima.com,Zimske Foto Ture,Vodene foto ture kroz zimski planinski pejzaž,zima,20.00,150,6,Zimski Pejzaž,True
+Planinski Piknik,piknik@planine.com,Planinski Piknici,Vodeni piknik sa lokalnom hranom i vinom,leto,8.00,180,20,Planinska Livada,True
+Aurora Borealis Tura,aurora@sever.com,Ture Severnog Svetla,Noćne ture za posmatranje polarne svetlosti,ceo_godina,40.00,180,12,Severna Tačka,True
+Planinski Joga Retreat,joga@planina.com,Planinska Joga,Trodnevni joga retreat sa meditacionim sesijama,leto,50.00,1440,20,Planinski Retreat Centar,True

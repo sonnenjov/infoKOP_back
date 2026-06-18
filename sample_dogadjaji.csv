@@ -1,0 +1,11 @@
+naziv,company_email,company_name,opis,kategorija,season,datum_pocetka,datum_zavrsetka,vreme,lokacija,cena,max_kapacitet,is_active
+Winter Music Festival,company1@example.com,Sample Hotel 1,Annual winter music festival with top international DJs,festivali,winter,2026-12-15,2026-12-18,20:00,Kopaonik Ski Resort,25.00,500,True
+Ski Competition,company2@example.com,Sample Apartman 2,Professional ski competition for all levels,takmicenja,winter,2026-12-20,2026-12-22,09:00,Kopaonik Slopes,15.00,100,True
+New Year Celebration,company3@example.com,Sample Restaurant 3,New Year's Eve celebration with fireworks and live music,festivali,winter,2026-12-31,2027-01-01,23:00,Mountain Square,0.00,1000,True
+Wine Tasting Evening,company4@example.com,Sample Cafe 4,Local wine tasting experience with expert sommelier,edukacija,all_year,2026-12-10,,18:30,Grand Restaurant,35.00,30,True
+Summer Festival,company5@example.com,Sample Kafic 5,Three-day summer music and arts festival,festivali,summer,2027-07-10,2027-07-12,19:00,Summer Stage,20.00,300,True
+Jazz Concert,company6@example.com,Sample Apres Ski 6,Evening jazz concert in the mountains,koncerti,all_year,2026-12-08,,20:00,Jazz Club,18.00,80,True
+Ski School Opening,company7@example.com,Sample Ski Skola 7,Season opening with free trial lessons,edukacija,winter,2026-12-01,2026-12-03,10:00,Ski School Base,0.00,,True
+Christmas Market,company8@example.com,Sample Organizator 8,Traditional Christmas market with local crafts,festivali,winter,2026-12-20,2027-01-05,16:00,Town Square,0.00,,True
+Mountain Bike Race,company9@example.com,Sample Servis 9,Annual mountain bike race competition,takmicenja,summer,2027-06-15,2027-06-16,08:00,Trail Park,12.00,150,True
+Sunset Yoga Session,company10@example.com,Sample Prevoz 10,Outdoor yoga session with mountain views,edukacija,summer,2027-06-20,,18:00,Viewpoint,8.00,25,True

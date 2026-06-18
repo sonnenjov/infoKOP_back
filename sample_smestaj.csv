@@ -1,0 +1,6 @@
+naziv,opis,tip,season,cena_po_nocenju,udaljenost_od_staza,kapacitet,ima_spa,ima_bazen,ski_in_ski_out,ima_restoran,ima_parking,ima_wifi
+"Hotel Grand Kopaonik","Luxury hotel with mountain view","hotel","all_year",150,200,100,true,true,false,true,true,true
+"Vila Panorama","Beautiful villa with panoramic view","vila","winter",120,500,12,true,true,false,true,true,true
+"Apartman Ski Lodge","Cozy apartment near slopes","apartman","winter",80,150,6,false,false,true,false,true,true
+"Hotel Mountain View","Modern hotel with spa center","hotel","summer",130,300,80,true,false,false,true,true,true
+"Vila Snow Peak","Luxury villa with ski-in ski-out","vila","winter",200,50,16,true,true,true,true,true,true

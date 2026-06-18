@@ -1,0 +1,4 @@
+user,company_name,type,address,pib,slug
+user1@example.com,Hotel Ski Resort,hotel,Stara Planina 123,Ski Resort,123456789,hotel-ski-resort
+user2@example.com,Alpine Apartments,apartman,Winter Street 45,Borovec,987654321,alpine-apartments
+user3@example.com,Mountain Restaurant,restoran,Peak Road 7,Kopaonik,456789123,mountain-restaurant
