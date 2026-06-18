@@ -78,3 +78,18 @@ def validate_skipass(request):
     ski_pass.save()
 
     return Response({'valid': True, 'pass_type': ski_pass.pass_type, 'user': ski_pass.user.email})
+
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_skipass(request, pk):
+    try:
+        ski_pass = SkiPass.objects.get(pk=pk)
+    except SkiPass.DoesNotExist:
+        return Response({'error': 'Pass not found'}, status=404)
+    if ski_pass.user != request.user:
+        return Response({'error': 'Not your pass'}, status=403)
+    ski_pass.delete()
+    return Response(status=204)
