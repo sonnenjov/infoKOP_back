@@ -1,4 +1,3 @@
-# dogadjaji/serializers.py
 
 from rest_framework import serializers
 from rest_framework.pagination import PageNumberPagination
@@ -110,7 +109,6 @@ class DogadjajReservationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
-        # Calculate total price
         dogadjaj = validated_data['dogadjaj']
         broj_karata = validated_data['broj_karata']
         if dogadjaj.cena:

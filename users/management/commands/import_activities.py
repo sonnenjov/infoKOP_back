@@ -41,10 +41,8 @@ class Command(BaseCommand):
         with open(csv_file, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             
-            # Print available columns for debugging
             self.stdout.write(self.style.NOTICE(f'Available columns: {", ".join(reader.fieldnames)}'))
             
-            # Required columns
             required_fields = ['title', 'price']
             missing_fields = [f for f in required_fields if f not in reader.fieldnames]
             if missing_fields:
@@ -53,11 +51,9 @@ class Command(BaseCommand):
 
             for row_num, row in enumerate(reader, start=2):
                 try:
-                    # Skip empty rows
                     if not any(row.values()):
                         continue
 
-                    # Get company
                     company = None
                     company_email = row.get('company_email', '').strip()
                     company_name = row.get('company_name', '').strip()
@@ -80,14 +76,12 @@ class Command(BaseCommand):
                         errors.append(f'Row {row_num}: Company not found (email: {company_email}, name: {company_name})')
                         continue
 
-                    # Parse required fields
                     title = row.get('title', '').strip()
                     if not title:
                         error_count += 1
                         errors.append(f'Row {row_num}: Missing title')
                         continue
 
-                    # Parse price
                     try:
                         price_str = row.get('price', '0').strip()
                         price = float(price_str) if price_str else 0.0
@@ -98,7 +92,6 @@ class Command(BaseCommand):
                         errors.append(f'Row {row_num}: Invalid price format: {row.get("price")}')
                         continue
 
-                    # Parse optional fields
                     description = row.get('description', '').strip()
 
                     duration_minutes = None
@@ -129,7 +122,6 @@ class Command(BaseCommand):
 
                     is_active = row.get('is_active', 'True').strip().lower() in ['true', '1', 'yes', 't']
 
-                    # Prepare data for Activity model
                     activity_data = {
                         'company': company,
                         'title': title,
@@ -147,9 +139,7 @@ class Command(BaseCommand):
                         created_count += 1
                         continue
 
-                    # Create or update activity
                     try:
-                        # Check if activity exists with same title and company
                         activity, created = Activity.objects.get_or_create(
                             title=title,
                             company=company,
@@ -157,9 +147,8 @@ class Command(BaseCommand):
                         )
                         
                         if not created:
-                            # Update existing activity
                             for key, value in activity_data.items():
-                                if key != 'company':  # Don't change company
+                                if key != 'company':  
                                     setattr(activity, key, value)
                             activity.save()
                             updated_count += 1
@@ -178,7 +167,6 @@ class Command(BaseCommand):
                     errors.append(f'Row {row_num}: Unexpected error: {str(e)}')
                     self.stdout.write(self.style.ERROR(f'Row {row_num}: Unexpected error: {str(e)}'))
 
-        # Summary
         self.stdout.write('\n' + '='*60)
         self.stdout.write(self.style.NOTICE('📊 IMPORT SUMMARY'))
         self.stdout.write('='*60)

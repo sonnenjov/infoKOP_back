@@ -1,4 +1,3 @@
-# smestaj/views.py
 
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count
@@ -21,14 +20,10 @@ from .serializers import (
 )
 
 
-# ============================================================================
-# SMESTAJI - List and Detail
-# ============================================================================
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_smestaji(request):
-    """Get all active accommodations with optional filters"""
     smestaji = Smestaj.objects.filter(is_active=True).select_related('company')
 
     season = request.query_params.get('season')
@@ -64,20 +59,15 @@ def get_smestaji(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_smestaj_detail(request, slug):
-    """Get single accommodation detail"""
     smestaj = get_object_or_404(Smestaj, slug=slug, is_active=True)
     serializer = SmestajSerializer(smestaj)
     return Response(serializer.data)
 
 
-# ============================================================================
-# SMESTAJI - Company Management
-# ============================================================================
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsCompany])
 def get_my_smestaji(request):
-    """Get all accommodations for the logged-in company"""
     smestaji = Smestaj.objects.filter(company=request.user.company_profile)
     serializer = SmestajSerializer(smestaji, many=True)
     return Response(serializer.data)
@@ -86,7 +76,6 @@ def get_my_smestaji(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, IsCompany])
 def create_smestaj(request):
-    """Create a new accommodation"""
     serializer = SmestajCreateSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         smestaj = serializer.save()
@@ -97,7 +86,6 @@ def create_smestaj(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated, IsCompany])
 def update_smestaj(request, pk):
-    """Update an accommodation"""
     smestaj = get_object_or_404(Smestaj, pk=pk, company=request.user.company_profile)
     serializer = SmestajCreateSerializer(
         smestaj, data=request.data, partial=True, context={'request': request}
@@ -111,25 +99,19 @@ def update_smestaj(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated, IsCompany])
 def delete_smestaj(request, pk):
-    """Delete an accommodation"""
     smestaj = get_object_or_404(Smestaj, pk=pk, company=request.user.company_profile)
     smestaj.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# ============================================================================
-# SMESTAJ RESERVATIONS - User Operations
-# ============================================================================
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, IsUser])
 def create_smestaj_reservation(request):
-    """Create a new accommodation reservation - only for regular users"""
     serializer = SmestajReservationSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         rezervacija = serializer.save()
         
-        # Log activity
         ActivityLog.objects.create(
             user=request.user,
             action=ActivityLog.ActionType.RESERVATION,
@@ -143,7 +125,6 @@ def create_smestaj_reservation(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsUser])
 def get_my_smestaj_reservations(request):
-    """Get all accommodation reservations for the logged-in user"""
     rezervacije = SmestajReservation.objects.filter(user=request.user).select_related(
         'smestaj', 'smestaj__company'
     )
@@ -154,10 +135,8 @@ def get_my_smestaj_reservations(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated, IsUser])
 def cancel_smestaj_reservation(request, pk):
-    """Cancel an accommodation reservation - user can only cancel their own"""
     rezervacija = get_object_or_404(SmestajReservation, pk=pk, user=request.user)
     
-    # Only allow cancellation if not already cancelled or completed
     if rezervacija.status in [SmestajReservation.Status.CANCELLED, SmestajReservation.Status.COMPLETED]:
         return Response(
             {'error': 'Ova rezervacija ne može biti otkazana'},
@@ -168,7 +147,6 @@ def cancel_smestaj_reservation(request, pk):
     rezervacija.status = SmestajReservation.Status.CANCELLED
     rezervacija.save()
     
-    # Log activity
     ActivityLog.objects.create(
         user=request.user,
         action=ActivityLog.ActionType.RESERVATION,
@@ -178,14 +156,10 @@ def cancel_smestaj_reservation(request, pk):
     return Response(SmestajReservationSerializer(rezervacija).data)
 
 
-# ============================================================================
-# SMESTAJ RESERVATIONS - Company Operations
-# ============================================================================
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsCompany])
 def get_company_smestaj_reservations(request):
-    """Get all accommodation reservations for company's properties"""
     rezervacije = SmestajReservation.objects.filter(
         smestaj__company=request.user.company_profile
     ).select_related('smestaj', 'user')
@@ -196,7 +170,6 @@ def get_company_smestaj_reservations(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated, IsCompany])
 def update_smestaj_reservation_status(request, pk):
-    """Update accommodation reservation status - company can confirm/reject"""
     rezervacija = get_object_or_404(
         SmestajReservation, pk=pk, smestaj__company=request.user.company_profile
     )
@@ -212,7 +185,6 @@ def update_smestaj_reservation_status(request, pk):
     rezervacija.status = new_status
     rezervacija.save()
     
-    # Log for company
     ActivityLog.objects.create(
         user=request.user,
         action=ActivityLog.ActionType.RESERVATION,
@@ -222,17 +194,11 @@ def update_smestaj_reservation_status(request, pk):
     return Response(SmestajReservationSerializer(rezervacija).data)
 
 
-# ============================================================================
-# SMESTAJ DASHBOARD
-# ============================================================================
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsCompany])
 def get_company_dashboard_stats(request):
-    """Get dashboard statistics for company's accommodations"""
     company = request.user.company_profile
     
-    # Summary stats
     all_reservations = SmestajReservation.objects.filter(smestaj__company=company)
     confirmed_reservations = all_reservations.filter(status=SmestajReservation.Status.CONFIRMED)
     
@@ -249,7 +215,6 @@ def get_company_dashboard_stats(request):
         ),
     }
     
-    # Monthly breakdown
     monthly_data = confirmed_reservations.annotate(
         month=TruncMonth('check_in')
     ).values('month').annotate(
@@ -258,7 +223,6 @@ def get_company_dashboard_stats(request):
         guests=Sum('broj_odraslih') + Sum('broj_dece')
     ).order_by('month')
     
-    # Properties with their stats
     properties_stats = []
     for prop in company.smestaji.all():
         prop_res = prop.rezervacije.filter(status=SmestajReservation.Status.CONFIRMED)

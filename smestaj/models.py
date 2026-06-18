@@ -36,7 +36,6 @@ class Smestaj(models.Model):
         blank=True
     )
 
-    # Amenities as simple booleans
     ima_spa = models.BooleanField(default=False)
     ima_bazen = models.BooleanField(default=False)
     ski_in_ski_out = models.BooleanField(default=False)
@@ -92,7 +91,6 @@ class SmestajReservation(models.Model):
     napomena = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
-    # Revenue tracking
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     revenue_updated = models.BooleanField(default=False)
 
@@ -108,7 +106,6 @@ class SmestajReservation(models.Model):
         return nights * self.smestaj.cena_po_nocenju
     
     def save(self, *args, **kwargs):
-        # Calculate total price if not set
         if not self.total_price:
             self.total_price = self.calculate_total_price()
         super().save(*args, **kwargs)

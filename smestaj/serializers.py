@@ -1,4 +1,3 @@
-# smestaj/serializers.py
 
 from rest_framework import serializers
 from rest_framework.pagination import PageNumberPagination
@@ -115,7 +114,6 @@ class SmestajReservationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
-        # Calculate total price
         validated_data['total_price'] = validated_data['smestaj'].cena_po_nocenju * (
             validated_data['check_out'] - validated_data['check_in']
         ).days

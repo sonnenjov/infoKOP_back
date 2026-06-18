@@ -1,18 +1,14 @@
-# smestaj/urls.py
 
 from django.urls import path
 from .views import (
-    # Smestaji listing
     get_smestaji,
     get_smestaj_detail,
     
-    # Company management
     get_my_smestaji,
     create_smestaj,
     update_smestaj,
     delete_smestaj,
     
-    # User reservations
     create_smestaj_reservation,
     get_my_smestaj_reservations,
     cancel_smestaj_reservation,

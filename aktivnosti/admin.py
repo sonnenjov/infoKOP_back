@@ -63,7 +63,6 @@ class ActivityAdmin(admin.ModelAdmin):
             'location', 'is_active'
         ])
         
-        # Add sample data
         sample_data = [
             ['Winter Ski Lessons', 'ski@kopaonik.com', 'Ski School', 'Professional ski lessons for all levels', 'winter', '25.00', '120', '10', 'Main Ski Slope', 'True'],
             ['Summer Hiking', 'hiking@mountain.com', 'Mountain Adventures', 'Guided hiking tours through beautiful trails', 'summer', '15.00', '180', '15', 'Mountain Trail', 'True'],

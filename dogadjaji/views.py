@@ -1,4 +1,3 @@
-# dogadjaji/views.py
 
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count
@@ -20,14 +19,10 @@ from .serializers import (
 )
 
 
-# ============================================================================
-# DOGADJAJI - List and Detail
-# ============================================================================
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_dogadjaji(request):
-    """Get all active events with optional filters"""
     queryset = Dogadjaj.objects.filter(is_active=True).select_related('company')
 
     kategorija = request.query_params.get('kategorija')
@@ -64,7 +59,6 @@ def get_dogadjaj_detail(request, slug):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsCompany])
 def get_my_dogadjaji(request):
-    """Get all events for the logged-in company"""
     dogadjaji = Dogadjaj.objects.filter(company=request.user.company_profile)
     serializer = DogadjajSerializer(dogadjaji, many=True)
     return Response(serializer.data)
@@ -73,7 +67,6 @@ def get_my_dogadjaji(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, IsCompany])
 def create_dogadjaj(request):
-    """Create a new event"""
     serializer = DogadjajCreateSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         dogadjaj = serializer.save()
@@ -84,7 +77,6 @@ def create_dogadjaj(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated, IsCompany])
 def update_dogadjaj(request, pk):
-    """Update an event"""
     dogadjaj = get_object_or_404(Dogadjaj, pk=pk, company=request.user.company_profile)
     serializer = DogadjajCreateSerializer(
         dogadjaj, data=request.data, partial=True, context={'request': request}
@@ -98,25 +90,18 @@ def update_dogadjaj(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated, IsCompany])
 def delete_dogadjaj(request, pk):
-    """Delete an event"""
     dogadjaj = get_object_or_404(Dogadjaj, pk=pk, company=request.user.company_profile)
     dogadjaj.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# ============================================================================
-# DOGADJAJ RESERVATIONS - User Operations
-# ============================================================================
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, IsUser])
 def create_dogadjaj_reservation(request):
-    """Create a new event reservation - only for regular users"""
     serializer = DogadjajReservationSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         rezervacija = serializer.save()
         
-        # Log activity
         ActivityLog.objects.create(
             user=request.user,
             action=ActivityLog.ActionType.RESERVATION,
@@ -130,7 +115,6 @@ def create_dogadjaj_reservation(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsUser])
 def get_my_dogadjaj_reservations(request):
-    """Get all event reservations for the logged-in user"""
     rezervacije = DogadjajReservation.objects.filter(user=request.user).select_related(
         'dogadjaj', 'dogadjaj__company'
     )
@@ -141,10 +125,8 @@ def get_my_dogadjaj_reservations(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated, IsUser])
 def cancel_dogadjaj_reservation(request, pk):
-    """Cancel an event reservation - user can only cancel their own"""
     rezervacija = get_object_or_404(DogadjajReservation, pk=pk, user=request.user)
     
-    # Only allow cancellation if not already cancelled or completed
     if rezervacija.status in [DogadjajReservation.Status.CANCELLED, DogadjajReservation.Status.COMPLETED]:
         return Response(
             {'error': 'Ova rezervacija ne može biti otkazana'},
@@ -155,7 +137,6 @@ def cancel_dogadjaj_reservation(request, pk):
     rezervacija.status = DogadjajReservation.Status.CANCELLED
     rezervacija.save()
     
-    # Log activity
     ActivityLog.objects.create(
         user=request.user,
         action=ActivityLog.ActionType.RESERVATION,
@@ -165,14 +146,10 @@ def cancel_dogadjaj_reservation(request, pk):
     return Response(DogadjajReservationSerializer(rezervacija).data)
 
 
-# ============================================================================
-# DOGADJAJ RESERVATIONS - Company Operations
-# ============================================================================
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsCompany])
 def get_company_dogadjaj_reservations(request):
-    """Get all event reservations for company's events"""
     rezervacije = DogadjajReservation.objects.filter(
         dogadjaj__company=request.user.company_profile
     ).select_related('dogadjaj', 'user')
@@ -183,7 +160,6 @@ def get_company_dogadjaj_reservations(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated, IsCompany])
 def update_dogadjaj_reservation_status(request, pk):
-    """Update event reservation status - company can confirm/reject"""
     rezervacija = get_object_or_404(
         DogadjajReservation, pk=pk, dogadjaj__company=request.user.company_profile
     )
@@ -199,7 +175,6 @@ def update_dogadjaj_reservation_status(request, pk):
     rezervacija.status = new_status
     rezervacija.save()
     
-    # Log for company
     ActivityLog.objects.create(
         user=request.user,
         action=ActivityLog.ActionType.RESERVATION,
@@ -209,17 +184,12 @@ def update_dogadjaj_reservation_status(request, pk):
     return Response(DogadjajReservationSerializer(rezervacija).data)
 
 
-# ============================================================================
-# DOGADJAJ DASHBOARD
-# ============================================================================
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsCompany])
 def get_company_dogadjaj_dashboard_stats(request):
-    """Get dashboard statistics for company's events"""
     company = request.user.company_profile
     
-    # Summary stats
     all_reservations = DogadjajReservation.objects.filter(dogadjaj__company=company)
     confirmed_reservations = all_reservations.filter(status=DogadjajReservation.Status.CONFIRMED)
     
@@ -232,7 +202,6 @@ def get_company_dogadjaj_dashboard_stats(request):
         'total_tickets_sold': confirmed_reservations.aggregate(Sum('broj_karata'))['broj_karata__sum'] or 0,
     }
     
-    # Monthly breakdown
     monthly_data = confirmed_reservations.annotate(
         month=TruncMonth('created_at')
     ).values('month').annotate(
@@ -241,7 +210,6 @@ def get_company_dogadjaj_dashboard_stats(request):
         tickets=Sum('broj_karata')
     ).order_by('month')
     
-    # Events with their reservations
     events_stats = []
     for event in company.dogadjaji.all():
         event_res = event.rezervacije.filter(status=DogadjajReservation.Status.CONFIRMED)

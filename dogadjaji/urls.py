@@ -1,4 +1,3 @@
-# dogadjaji/urls.py
 
 from django.urls import path
 from .views import (
@@ -13,11 +12,9 @@ from .views import (
     get_my_dogadjaj_reservations,
     cancel_dogadjaj_reservation,
     
-    # Company reservations management
     get_company_dogadjaj_reservations,
     update_dogadjaj_reservation_status,
     
-    # Dashboard/Statistics
     get_company_dogadjaj_dashboard_stats,
 )
 
