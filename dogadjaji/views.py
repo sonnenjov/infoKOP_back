@@ -55,15 +55,11 @@ def get_dogadjaji(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_dogadjaj_detail(request, slug):
-    """Get single event detail"""
     dogadjaj = get_object_or_404(Dogadjaj, slug=slug, is_active=True)
     serializer = DogadjajSerializer(dogadjaj)
     return Response(serializer.data)
 
 
-# ============================================================================
-# DOGADJAJI - Company Management
-# ============================================================================
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsCompany])

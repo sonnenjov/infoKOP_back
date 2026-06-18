@@ -2,17 +2,13 @@
 
 from django.urls import path
 from .views import (
-    # Dogadjaji listing
     get_dogadjaji,
     get_dogadjaj_detail,
-    
-    # Company management
     get_my_dogadjaji,
     create_dogadjaj,
     update_dogadjaj,
     delete_dogadjaj,
     
-    # User reservations
     create_dogadjaj_reservation,
     get_my_dogadjaj_reservations,
     cancel_dogadjaj_reservation,
@@ -30,7 +26,6 @@ app_name = 'dogadjaji'
 urlpatterns = [
     path('', get_dogadjaji, name='dogadjaj-list'),
     path('<slug:slug>/', get_dogadjaj_detail, name='dogadjaj-detail'),
-    
     path('my/', get_my_dogadjaji, name='my-dogadjaji'),
     path('create/', create_dogadjaj, name='create-dogadjaj'),
     path('<int:pk>/update/', update_dogadjaj, name='update-dogadjaj'),

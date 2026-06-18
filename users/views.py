@@ -457,6 +457,7 @@ def update_my_profile(request):
     user = request.user
     
     if 'avatar' in request.FILES:
+        print("FILES:", request.FILES)
         user.avatar = request.FILES['avatar']
     
     serializer = UserRegisterSerializer(user, data=request.data, partial=True)
