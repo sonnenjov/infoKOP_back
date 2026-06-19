@@ -181,6 +181,30 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # SAFE CORS CONFIGURATION - Replace in your settings.py
 
+
+if config('RENDER', default=False, cast=bool):
+    # PRODUCTION: Use async tasks with Redis broker
+    CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+    CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+    CELERY_TASK_ALWAYS_EAGER = False  # ✅ Run tasks asynchronously
+    CELERY_TASK_EAGER_PROPAGATES = False
+    CELERY_TASK_TIME_LIMIT = 600  # 10 minutes
+    CELERY_TASK_SOFT_TIME_LIMIT = 540  # 9 minutes
+else:
+    # LOCAL DEVELOPMENT: Run tasks immediately
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
+ 
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+ 
+ 
+# ============================================
+# CORS CONFIGURATION (SAFE VERSION)
+# ============================================
+ 
 if config('RENDER', default=False, cast=bool):
     # Safely parse comma-separated values from environment
     cors_origins_str = config('CORS_ALLOWED_ORIGINS', default='').strip()
@@ -192,12 +216,13 @@ if config('RENDER', default=False, cast=bool):
     allowed_hosts_str = config('ALLOWED_HOSTS', default='').strip()
     ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(',') if host.strip()]
     
-    # Fallback to localhost if nothing is set (prevents empty list errors)
+    # Fallback if nothing is set
     if not CORS_ALLOWED_ORIGINS:
-        CORS_ALLOWED_ORIGINS = ['https://your-frontend-domain.com']
+        CORS_ALLOWED_ORIGINS = ['https://infokop-frontend.onrender.com']
     if not ALLOWED_HOSTS:
         ALLOWED_HOSTS = ['*']
 else:
+    # LOCAL DEVELOPMENT
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",     
         "http://127.0.0.1:3000",
@@ -221,6 +246,7 @@ else:
         "http://192.168.1.6:5174",
     ]
     ALLOWED_HOSTS = ['*']
+ 
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -229,7 +255,7 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
-
+ 
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -241,7 +267,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-
+ 
 CORS_ALLOW_CREDENTIALS = True
 
 cloudinary.config( 

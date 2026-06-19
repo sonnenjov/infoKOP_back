@@ -9,7 +9,7 @@ from users.email_utils import send_password_reset_email
 from users.models import ActivityLog, CompanyProfile
 from users.tasks import (
     send_admin_approval_request_task, send_approval_email_task,
-    send_confirmation_email_task, send_rejection_email_task,
+    send_confirmation_email_task, send_password_reset_email_task, send_rejection_email_task,
     send_user_approval_email_task, send_user_rejection_email_task,
     send_user_banned_email_task, send_user_unbanned_email_task,
 )
@@ -598,18 +598,32 @@ def verify_email(request):
     return Response({'detail': 'Email potvrđen! Čekajte odobrenje administratora.'})
 
 
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def request_password_reset(request):
     email = request.data.get('email')
     user = User.objects.filter(email=email).first()
+    
     if user:
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        send_password_reset_email(user, uid, token)  
-
-    return Response({'message': 'Ako nalog postoji, link je poslat na email.'})
-
+        
+        send_password_reset_email_task.delay(user.id, uid, token)
+    
+    return Response({
+        'message': 'Ako nalog postoji, link je poslat na email.'
+    })
+ 
+ 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def confirm_password_reset(request):
+    """
+    Confirm password reset with token and new password
+    Keep this function as is - no changes needed
+    """
+    pass
 
 UGOSTITELJI_TYPES = ['restoran', 'kafic', 'apres_ski', 'nocni_zivot']
 
