@@ -179,10 +179,24 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# SAFE CORS CONFIGURATION - Replace in your settings.py
+
 if config('RENDER', default=False, cast=bool):
-    CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='').split(',')
-    CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',')
-    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+    # Safely parse comma-separated values from environment
+    cors_origins_str = config('CORS_ALLOWED_ORIGINS', default='').strip()
+    CORS_ALLOWED_ORIGINS = [url.strip() for url in cors_origins_str.split(',') if url.strip()]
+    
+    csrf_origins_str = config('CSRF_TRUSTED_ORIGINS', default='').strip()
+    CSRF_TRUSTED_ORIGINS = [url.strip() for url in csrf_origins_str.split(',') if url.strip()]
+    
+    allowed_hosts_str = config('ALLOWED_HOSTS', default='').strip()
+    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(',') if host.strip()]
+    
+    # Fallback to localhost if nothing is set (prevents empty list errors)
+    if not CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS = ['https://your-frontend-domain.com']
+    if not ALLOWED_HOSTS:
+        ALLOWED_HOSTS = ['*']
 else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",     
@@ -207,7 +221,6 @@ else:
         "http://192.168.1.6:5174",
     ]
     ALLOWED_HOSTS = ['*']
-
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
